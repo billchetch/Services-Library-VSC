@@ -7,8 +7,11 @@ namespace Chetch.Services;
 
 abstract public class Service<T> : BackgroundService where T : BackgroundService
 {
+    #region Constants
     public const String APPSETTINGS_FILE = "appsettings.json";
+    #endregion
 
+    #region Static stuff
     static public IConfiguration Config {get; internal set; } = null;
 
     static public void Run(String[] args)
@@ -23,13 +26,21 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
         var host = builder.Build();
         host.Run();
     }
+    #endregion
 
+    #region Properties
     public ILogger<T> Logger { get; protected set; }
 
+    public String ServiceName { get; set; } = String.Empty;
+    #endregion
+
+    #region Constructors
     public Service(ILogger<T> logger){
         Logger = logger;
     }
+    #endregion
 
+    #region Lifecycle methods
     public override Task StartAsync(CancellationToken cancellationToken)
     {
         Logger.LogInformation(10, "Starting service at: {time}", DateTimeOffset.Now);
@@ -69,4 +80,5 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
         Logger.LogInformation(1000, "Stopping service at: {time}", DateTimeOffset.Now);
         return base.StopAsync(cancellationToken);
     }
+    #endregion
 }
