@@ -9,6 +9,7 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
 {
     #region Constants
     public const String APPSETTINGS_FILE = "appsettings.json";
+    public const String APPSETTINGS_LOCAL_FILE = "appsettings.local.json";
     #endregion
 
     #region Static stuff
@@ -16,7 +17,13 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
 
     static public void Run(String[] args)
     {
-        var configBuilder = new ConfigurationBuilder().AddJsonFile(APPSETTINGS_FILE, false);
+        String appSettingsFile = APPSETTINGS_LOCAL_FILE;
+        if(!File.Exists(APPSETTINGS_LOCAL_FILE))
+        {
+            appSettingsFile = APPSETTINGS_FILE;
+        }
+
+        var configBuilder = new ConfigurationBuilder().AddJsonFile(appSettingsFile, false);
         Config = configBuilder.Build();
 
         var builder = Host.CreateApplicationBuilder(args);
