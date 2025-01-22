@@ -17,15 +17,6 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
 
     static public void Run(String[] args)
     {
-        String appSettingsFile = APPSETTINGS_LOCAL_FILE;
-        if(!File.Exists(APPSETTINGS_LOCAL_FILE))
-        {
-            appSettingsFile = APPSETTINGS_FILE;
-        }
-
-        var configBuilder = new ConfigurationBuilder().AddJsonFile(appSettingsFile, false);
-        Config = configBuilder.Build();
-
         var builder = Host.CreateApplicationBuilder(args);
         builder.Services.AddSystemd();
         builder.Services.AddHostedService<T>();
@@ -44,6 +35,18 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
     #region Constructors
     public Service(ILogger<T> logger){
         Logger = logger;
+
+        if(Config == null)
+        {
+            String appSettingsFile = APPSETTINGS_LOCAL_FILE;
+            if(!File.Exists(appSettingsFile))
+            {
+                appSettingsFile = APPSETTINGS_FILE;
+            }
+            Logger.LogInformation(String.Format("Creating service and loading config from: {0}", appSettingsFile));
+            var configBuilder = new ConfigurationBuilder().AddJsonFile(appSettingsFile, false);
+            Config = configBuilder.Build();
+        }
     }
     #endregion
 
