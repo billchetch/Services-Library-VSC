@@ -38,14 +38,21 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
 
         if(Config == null)
         {
-            String appSettingsFile = APPSETTINGS_LOCAL_FILE;
-            if(!File.Exists(appSettingsFile))
+            String[] appSettingsFiles = [APPSETTINGS_LOCAL_FILE, APPSETTINGS_FILE];
+            
+            foreach(var appSettingsFile in appSettingsFiles)
             {
-                appSettingsFile = APPSETTINGS_FILE;
+                try{
+                    var configBuilder = new ConfigurationBuilder().AddJsonFile(appSettingsFile, false);
+                    Config = configBuilder.Build();
+                    Logger.LogInformation(String.Format("Loaded config from: {0}", appSettingsFile));
+                    break;
+                }
+                catch(Exception e)
+                {
+                    Logger.LogError(e, String.Format("Cannot load {0}}", appSettingsFile));
+                }
             }
-            Logger.LogInformation(String.Format("Creating service and loading config from: {0}", appSettingsFile));
-            var configBuilder = new ConfigurationBuilder().AddJsonFile(appSettingsFile, false);
-            Config = configBuilder.Build();
         }
     }
     #endregion
