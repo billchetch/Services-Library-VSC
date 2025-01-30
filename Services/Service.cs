@@ -50,7 +50,7 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
                 }
                 catch(Exception e)
                 {
-                    Logger.LogError(e, String.Format("Cannot load {0}}", appSettingsFile));
+                    Logger.LogError(e, String.Format("Cannot load {0}", appSettingsFile));
                 }
             }
         }
