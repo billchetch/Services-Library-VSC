@@ -25,7 +25,6 @@ public sealed class Test1
     {
         var factory = new LoggerFactory();
         var logger = new Logger<TestService>(factory);
-
         for(int i = 0; i < 130; i++)
         {
             try
