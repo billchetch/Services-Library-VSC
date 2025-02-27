@@ -25,14 +25,18 @@ public sealed class Test1
     {
         var factory = new LoggerFactory();
         var logger = new Logger<TestService>(factory);
+        List<TestService> instances = [];
+        Debug.Print("Wtf");
         for(int i = 0; i < 130; i++)
         {
             try
             {
                 var ts = new TestService(logger);
+                instances.Add(ts);
             } catch (Exception e)
             {
                 Debug.Print(e.Message);
+                throw;
             }
         }
     }

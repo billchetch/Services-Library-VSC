@@ -33,7 +33,7 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
     #endregion
 
     #region Constructors
-    public Service(ILogger<T> logger){
+    public Service(ILogger<T> logger, bool reloadSettingsOnChange = false){
         Logger = logger;
 
         if(Config == null)
@@ -43,7 +43,7 @@ abstract public class Service<T> : BackgroundService where T : BackgroundService
             foreach(var appSettingsFile in appSettingsFiles)
             {
                 try{
-                    var configBuilder = new ConfigurationBuilder().AddJsonFile(appSettingsFile, false);
+                    var configBuilder = new ConfigurationBuilder().AddJsonFile(appSettingsFile, false, reloadSettingsOnChange);
                     Config = configBuilder.Build();
                     Logger.LogInformation(String.Format("Loaded config from: {0}", appSettingsFile));
                     break;
